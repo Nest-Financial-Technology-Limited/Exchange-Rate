@@ -26,7 +26,6 @@ async function getToken() {
     body: JSON.stringify(authPayload),
   });
 
-  // ✅ Use res instead of response
   if (!res.ok) {
     const text = await res.text(); // <-- corrected
     console.error("Keyrails API Error:", res.status, text);
