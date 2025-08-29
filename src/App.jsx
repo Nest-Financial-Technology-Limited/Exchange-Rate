@@ -47,7 +47,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="text font-bold mb-4">Nestpay NGN Currency Converter</h1>
+      <h1 className="text font-bold mb-4">Nestpay ₦ Currency Converter</h1>
 
       <input
         type="number"
