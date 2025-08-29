@@ -26,13 +26,21 @@ async function getToken() {
     body: JSON.stringify(authPayload),
   });
 
+  // ✅ Use res instead of response
   if (!res.ok) {
-  // Log status and text for debugging
-  const text = await response.text();
-  console.error("Keyrails API Error:", response.status, text);
-  throw new Error(`Keyrails API returned ${response.status}`);
-}
-  const data = await res.json();
+    const text = await res.text(); // <-- corrected
+    console.error("Keyrails API Error:", res.status, text);
+    throw new Error(`Keyrails API returned ${res.status}`);
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    const text = await res.text(); // fallback in case JSON parsing fails
+    console.error("Failed to parse JSON:", text);
+    throw err;
+  }
 
   cachedToken = data.access_token;
   tokenExpiry = new Date(new Date().getTime() + (data.expires_in || 3600) * 1000);
@@ -42,10 +50,22 @@ async function getToken() {
 
 export async function handler(event) {
   const { targetCurrency } = event.queryStringParameters;
+
   const token = await getToken();
-  const res = await fetch(`https://api.keyrails.com/api/v1/exchange-rates?fromCurrency=USDC&toCurrency=${targetCurrency}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+
+  const res = await fetch(
+    `https://api.keyrails.com/api/v1/exchange-rates?fromCurrency=USDC&toCurrency=${targetCurrency}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("Keyrails rates API Error:", res.status, text);
+    return { statusCode: res.status, body: text };
+  }
+
   const data = await res.json();
   return { statusCode: 200, body: JSON.stringify(data) };
 }
