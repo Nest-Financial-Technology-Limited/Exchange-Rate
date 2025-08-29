@@ -6,6 +6,7 @@ export default function App() {
   const [amountNGN, setAmountNGN] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [result, setResult] = useState(null);
+  const [rateInfo, setRateInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleConvert = async () => {
@@ -25,13 +26,17 @@ export default function App() {
 
       // 3️⃣ USD → Target
       let targetAmount = usdAmount;
+      let ngnPerTarget = usdToNgn;
       if (currency !== "USD") {
         const keyrailsRes = await fetch(`/.netlify/functions/keyrails?targetCurrency=${currency}`);
         const keyrailsData = await keyrailsRes.json();
-        targetAmount = usdAmount * parseFloat(keyrailsData.data[0].exchangeRate);
+        const rate = parseFloat(keyrailsData.data[0].exchangeRate);
+        targetAmount = usdAmount * rate;
+        ngnPerTarget = usdToNgn / rate; 
       }
 
       setResult(targetAmount.toFixed(2));
+      setRateInfo(`1 ${currency} = ${ngnPerTarget.toFixed(2)} NGN`);
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -70,9 +75,12 @@ export default function App() {
         {loading ? "Converting..." : "Convert"}
       </button>
 
-      {result && (
-        <div className="mt-4 text-xl font-semibold">
-          {amountNGN} NGN ≈ {result} {currency}
+       {result && (
+        <div className="mt-4 text-xl font-semibold text-center">
+          <div>{amountNGN} NGN ≈ {result} {currency}</div>
+          {rateInfo && (
+            <div className="text-sm text-gray-600 mt-2">{rateInfo}</div>
+          )}
         </div>
       )}
     </div>
