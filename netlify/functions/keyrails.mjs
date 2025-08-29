@@ -25,6 +25,13 @@ async function getToken() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(authPayload),
   });
+
+  if (!res.ok) {
+  // Log status and text for debugging
+  const text = await response.text();
+  console.error("Keyrails API Error:", response.status, text);
+  throw new Error(`Keyrails API returned ${response.status}`);
+}
   const data = await res.json();
 
   cachedToken = data.access_token;
