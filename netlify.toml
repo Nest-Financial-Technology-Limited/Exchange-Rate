@@ -1,0 +1,3 @@
+[build]
+  publish = "dist"                  # your Vite build folder
+  functions = "netlify/functions"  # path to functions folder
