@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
 
-const CLIENT_ID = process.env.KEYRAILS_CLIENT_ID;
-const API_KEY = process.env.KEYRAILS_API_KEY;
-const API_SECRET = process.env.KEYRAILS_API_SECRET;
+const CLIENT_ID = process.env.VITE_KEYRAILS_CLIENT_ID;
+const API_KEY = process.env.VITE_KEYRAILS_API_KEY;
+const API_SECRET = process.env.VITE_KEYRAILS_API_SECRET;
 
 let cachedToken = null;
 let tokenExpiry = null;

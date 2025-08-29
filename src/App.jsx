@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const MARKUP_FEE = parseFloat(import.meta.env.VITE_MARKUP_FEE || 0);
+const MARKUP_FEE = parseFloat(import.meta.env.VITE_MARKUP_FEE || 50);
 
 export default function App() {
   const [amountNGN, setAmountNGN] = useState("");
